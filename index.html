@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sample</title>
+</head>
+<body>
+
+<script>
+
+// Create an empty context menu
+var menu = new nw.Menu();
+var gui = require('nw.gui');
+
+// Add some items with label
+menu.append(new nw.MenuItem({
+  label: 'Item A',
+  click: function(){
+    alert('You have clicked at "Item A"');
+  }
+}));
+menu.append(new nw.MenuItem({ label: 'Item B' }));
+menu.append(new nw.MenuItem({ type: 'separator' }));
+menu.append(new nw.MenuItem({ label: 'Item C' }));
+
+// Hooks the "contextmenu" event
+document.body.addEventListener('contextmenu', function(ev) {
+  // Prevent showing default context menu
+  ev.preventDefault();
+  // Popup the native context menu at place you click
+  menu.popup(ev.x, ev.y);
+
+  return false;
+}, false);
+
+
+function PSScript(f,a,b){
+    
+const { exec } = require('child_process');
+const scriptPath = '.\\script.ps1';
+const functionName = f;
+const functionArgs = '-Parameter1 "'+a+'"" -Parameter2 "'+b+'"';
+exec(`powershell.exe -ExecutionPolicy Bypass -Command "& { . '${scriptPath}'; ${functionName} ${functionArgs} }"`, (error, stdout, stderr) => {
+  if (error) {
+    alert(`exec error: ${error}`);
+    return;
+  }
+
+  // Output the function result
+  alert(`Function output: ${stdout}`);
+});
+
+}
+
+function LinkAction(i){
+    
+  switch (i) {
+  case 1:
+    alert('Try the ContextMenu too');
+    break;
+ case 2:
+     PSScript('myFunction1','ValueA','ValueB');
+    break;
+  case 3:
+     PSScript('myFunction2','Value1','Value2');
+     break;
+
+  default:
+     alert(i);
+}
+  }
+
+</script>  
+
+
+<div>
+  <a href="javascript:void(0);" onclick="LinkAction(1);">Display info</a><br><br>
+  <a href="javascript:void(0);" onclick="LinkAction(2);">Powershell script function1 result</a><br><br>
+  <a href="javascript:void(0);" onclick="LinkAction(3);">Powershell script function2 result</a><br>
+</div>
+
+</body>
+</html>
